@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up and Sign In</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+          
+            text-align: center;
+        }
+        h2 {
+            margin-bottom: 20px;
+        }
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            width: 50%;
+            padding: 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .switch-link {
+            display: block;
+            margin-top: 10px;
+            color: #007bff;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container" id="sign-up-container">
+    <h2>Sign Up</h2>
+    <input type="text" id="signup-username" placeholder="Username" required>
+    <input type="text" id="signup-email" placeholder="Email" required>
+    <input type="password" id="signup-password" placeholder="Password" required>
+    <button onclick="signUp()">Sign Up</button>
+    <span class="switch-link" onclick="showSignIn()">Already have an account? Sign In</span>
+</div>
+
+<div class="container" id="sign-in-container" style="display: none;">
+    <h2>Sign In</h2>
+    <input type="text" id="signin-username" placeholder="Username" required>
+    <input type="password" id="signin-password" placeholder="Password" required>
+    <button onclick="signIn()">Sign In</button>
+    <span class="switch-link" onclick="showSignUp()">Don't have an account? Sign Up</span>
+</div>
+
+<script>
+    // Switch between sign-up and sign-in
+    function showSignUp() {
+        document.getElementById('sign-up-container').style.display = 'block';
+        document.getElementById('sign-in-container').style.display = 'none';
+    }
+
+    function showSignIn() {
+        document.getElementById('sign-up-container').style.display = 'none';
+        document.getElementById('sign-in-container').style.display = 'block';
+    }
+
+    // Sign-Up Function
+    async function signUp() {
+        const username = document.getElementById('signup-username').value;
+        const email = document.getElementById('signup-email').value;
+        const password = document.getElementById('signup-password').value;
+
+        const uri = "mongodb://localhost:27017/jahanzaib"; // Replace with your MongoDB URI
+ 
+        const response = await fetch('http://localhost:5000/signup', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ username, email, password }),
+        });
+
+        const result = await response.json();
+        if (response.ok) {
+            alert('Sign-up successful! Please sign in.');
+            showSignIn();
+        } else {
+            alert('Error: ' + result.error);
+        }
+    }
+
+    // Sign-In Function
+    async function signIn() {
+        const username = document.getElementById('signin-username').value;
+        const password = document.getElementById('signin-password').value;
+
+        const response = await fetch('http://localhost:5000/signin', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ username, password }),
+        });
+
+        const result = await response.json();
+        if (response.ok) {
+            alert('Sign-in successful!');
+            // Handle successful sign-in (e.g., redirect, store user info)
+        } else {
+            alert('Error: ' + result.error);
+        }
+    }
+</script>
+
+</body>
+</html>
